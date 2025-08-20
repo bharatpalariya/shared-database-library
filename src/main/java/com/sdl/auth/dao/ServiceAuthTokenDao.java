@@ -2,8 +2,8 @@ package com.sdl.auth.dao;
 
 import java.util.List;
 
-import com.sdl.auth.exception.SDLException;
-import com.sdl.auth.exception.SDLMessages;
+import com.mc.scl.exception.CommonException;
+import com.mc.scl.exception.CommonExceptionMessages;
 import com.sdl.auth.entity.ServiceAuthToken;
 import com.sdl.auth.enums.Status;
 
@@ -11,8 +11,7 @@ public interface ServiceAuthTokenDao {
 
     default void isEmptyOrNull(Boolean bool) {
         if (Boolean.TRUE.equals(bool))
-            throw new SDLException(SDLMessages.DATA_NOT_FOUND_CODE,
-                    SDLMessages.DATA_NOT_FOUND_MESSAGE + " For Service Auth");
+            throw new CommonException(CommonExceptionMessages.DATA_NOT_FOUND);
     }
 
     List<ServiceAuthToken> saveAll(List<ServiceAuthToken> serviceAuths);

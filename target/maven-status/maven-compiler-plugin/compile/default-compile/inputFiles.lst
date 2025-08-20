@@ -1,8 +1,12 @@
 /Users/bharatpalariya/shared-database-library/src/main/java/com/sdl/auth/dao/ServiceAuthTokenDao.java
 /Users/bharatpalariya/shared-database-library/src/main/java/com/sdl/auth/dao/ServiceAuthTokenDaoImpl.java
 /Users/bharatpalariya/shared-database-library/src/main/java/com/sdl/auth/enums/Status.java
-/Users/bharatpalariya/shared-database-library/src/main/java/com/sdl/auth/exception/SDLMessages.java
+/Users/bharatpalariya/shared-database-library/src/main/java/com/sdl/user/enums/UserStatus.java
 /Users/bharatpalariya/shared-database-library/src/main/java/com/sdl/auth/entity/ServiceAuthToken.java
+/Users/bharatpalariya/shared-database-library/src/main/java/com/sdl/user/repo/UserRepo.java
 /Users/bharatpalariya/shared-database-library/src/main/java/com/sdl/auth/repo/ServiceAuthTokenRepo.java
-/Users/bharatpalariya/shared-database-library/src/main/java/com/sdl/auth/common/model/VariablesConstant.java
-/Users/bharatpalariya/shared-database-library/src/main/java/com/sdl/auth/exception/SDLException.java
+/Users/bharatpalariya/shared-database-library/src/main/java/com/sdl/user/dao/UserDaoImpl.java
+/Users/bharatpalariya/shared-database-library/src/main/java/com/sdl/auth/common/VariablesConstant.java
+/Users/bharatpalariya/shared-database-library/src/main/java/com/sdl/user/entity/User.java
+/Users/bharatpalariya/shared-database-library/src/main/java/com/sdl/user/dao/UserDao.java
+/Users/bharatpalariya/shared-database-library/src/main/java/com/sdl/user/common/UserVariablesConstant.java
