@@ -10,7 +10,22 @@
   <packaging>jar</packaging>
 
   <name>shared-database-library</name>
-  <description>Shared  database entities for microservices</description>
+  <description>Shared database entities for microservices</description>
+  <url>https://github.com/bharatpalariya/shared-database-library</url>
+
+  <distributionManagement>
+    <repository>
+      <id>github</id>
+      <name>GitHub Packages</name>
+      <url>https://maven.pkg.github.com/bharatpalariya/shared-database-library</url>
+    </repository>
+  </distributionManagement>
+
+  <scm>
+    <connection>scm:git:git://github.com/bharatpalariya/shared-database-library.git</connection>
+    <developerConnection>scm:git:ssh://github.com:bharatpalariya/shared-database-library.git</developerConnection>
+    <url>http://github.com/bharatpalariya/shared-database-library/tree/main</url>
+  </scm>
 
   <properties>
     <java.version>17</java.version>
@@ -75,7 +90,48 @@
           <source>17</source>
           <target>17</target>
           <encoding>UTF-8</encoding>
+          <annotationProcessorPaths>
+            <path>
+              <groupId>org.projectlombok</groupId>
+              <artifactId>lombok</artifactId>
+              <version>1.18.30</version>
+            </path>
+          </annotationProcessorPaths>
+        </configuration>
+      </plugin>
 
+      <!-- Maven Source Plugin -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <version>3.3.0</version>
+        <executions>
+          <execution>
+            <id>attach-sources</id>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!-- Maven Javadoc Plugin -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>3.6.0</version>
+        <executions>
+          <execution>
+            <id>attach-javadocs</id>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <source>17</source>
+          <detectJavaApiLink>false</detectJavaApiLink>
+          <additionalJOption>-Xdoclint:none</additionalJOption>
         </configuration>
       </plugin>
     </plugins>
