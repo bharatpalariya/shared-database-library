@@ -33,7 +33,7 @@ public interface ServiceAuthTokenRepo extends JpaRepository<ServiceAuthToken, Lo
            nativeQuery = true)
     List<ServiceAuthToken> findExpiredTokens();
 
-    @Query(value = "select * from service_auth_token sat where sat.allowed_ips LIKE %:ipAddress%", 
+    @Query(value = "select * from service_auth_token sat where sat.allowed_ips LIKE CONCAT('%', :ipAddress, '%')", 
            nativeQuery = true)
     List<ServiceAuthToken> findByIpAddress(@Param("ipAddress") String ipAddress);
 }

@@ -1,0 +1,8 @@
+com/sdl/auth/entity/ServiceAuthToken.class
+com/sdl/auth/common/model/VariablesConstant.class
+com/sdl/auth/enums/Status.class
+com/sdl/auth/repo/ServiceAuthTokenRepo.class
+com/sdl/auth/dao/ServiceAuthTokenDao.class
+com/sdl/auth/exception/SDLException.class
+com/sdl/auth/dao/ServiceAuthTokenDaoImpl.class
+com/sdl/auth/exception/SDLMessages.class
