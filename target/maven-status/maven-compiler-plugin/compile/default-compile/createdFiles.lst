@@ -1,2 +1,8 @@
-com/example/common/entity/User.class
-com/example/common/entity/UserData.class
+com/sdl/auth/common/model/VariablesConstant.class
+com/sdl/auth/enums/Status.class
+com/sdl/auth/dao/ServiceAuthDaoImpl.class
+com/sdl/auth/dao/ServiceAuthDao.class
+com/sdl/auth/repo/ServiceAuthRepo.class
+com/sdl/auth/exception/SDLException.class
+com/sdl/auth/exception/SDLMessages.class
+com/sdl/auth/entity/ServiceAuth.class
