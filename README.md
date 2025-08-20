@@ -46,19 +46,18 @@ com.sdl.auth/
 
 ## 🗄️ Database Schema
 
-### Table: `service_auth`
+### Table: `service_auth_token`
 
 | Column Name | Type | Constraints | Description |
 |-------------|------|-------------|-------------|
 | id | BIGINT | Primary Key, Auto Increment | Unique identifier |
-| client_code | VARCHAR | NOT NULL | Client identification code |
-| token | VARCHAR | NOT NULL | Authentication token |
-| client_ip | VARCHAR | NOT NULL | Client IP address |
+| service_code | VARCHAR | NOT NULL | Service identification code |
+| service_auth_key | VARCHAR | NOT NULL | Service authentication key/token |
+| allowed_ips | VARCHAR | NULL | Comma-separated list of allowed IP addresses |
 | status | VARCHAR | NOT NULL, Enum | Status: ACTIVE, INACTIVE, SUSPENDED, EXPIRED |
-| created_by | BIGINT | NOT NULL | User ID who created the record |
 | created_at | TIMESTAMP | NOT NULL, Auto-set | Record creation timestamp |
-| updated_by | BIGINT | Auto-updated | User ID who updated the record |
 | updated_at | TIMESTAMP | Auto-updated | Record update timestamp |
+| expires_at | TIMESTAMP | NOT NULL | Token expiration timestamp |
 
 ## ⚙️ How It Works
 
@@ -178,7 +177,7 @@ public interface ServiceAuthRepo extends JpaRepository<ServiceAuth, Long> {
 ### Creating a New Service Auth
 ```java
 // Create new service authentication
-ServiceAuth auth = new ServiceAuth("CLIENT001", "auth-token-123", "192.168.1.100", 1L);
+ServiceAuth auth = new ServiceAuth("USER_SERVICE", "auth-key-123456", "192.168.1.100,10.0.0.1");
 
 // Save using DAO
 ServiceAuth savedAuth = serviceAuthDao.save(auth);
@@ -187,28 +186,35 @@ ServiceAuth savedAuth = serviceAuthDao.save(auth);
 ### Updating Status
 ```java
 // Update status with audit trail
-ServiceAuth updatedAuth = existingAuth.updateStatus(Status.SUSPENDED, 2L);
+ServiceAuth updatedAuth = existingAuth.updateStatus(Status.SUSPENDED);
 serviceAuthDao.save(updatedAuth);
 ```
 
 ### Querying Data
 ```java
-// Find by client code (throws exception if not found)
-List<ServiceAuth> auths = serviceAuthDao.findByClientCode("CLIENT001");
+// Find by service code (throws exception if not found)
+List<ServiceAuth> auths = serviceAuthDao.findByServiceCode("USER_SERVICE");
 
-// Count active auths for a client
-Integer count = serviceAuthDao.countByClientCodeAndStatus("CLIENT001", Status.ACTIVE);
+// Count active auths for a service
+Integer count = serviceAuthDao.countByServiceCodeAndStatus("USER_SERVICE", Status.ACTIVE);
 
-// Find by token
-ServiceAuth auth = serviceAuthDao.findByToken("auth-token-123");
+// Find by auth key
+ServiceAuth auth = serviceAuthDao.findByServiceAuthKey("auth-key-123456");
+
+// Find by service code, auth key and status (your requested method)
+ServiceAuth specificAuth = serviceAuthDao.findByServiceCodeAndServiceAuthKeyAndStatus(
+    "USER_SERVICE", "auth-key-123456", Status.ACTIVE);
+
+// Find expired tokens
+List<ServiceAuth> expiredTokens = serviceAuthDao.findExpiredTokens();
 ```
 
 ### Batch Operations
 ```java
 // Save multiple auth records
 List<ServiceAuth> authList = Arrays.asList(
-    new ServiceAuth("CLIENT001", "token1", "192.168.1.1", 1L),
-    new ServiceAuth("CLIENT002", "token2", "192.168.1.2", 1L)
+    new ServiceAuth("USER_SERVICE", "key1", "192.168.1.1"),
+    new ServiceAuth("ORDER_SERVICE", "key2", "192.168.1.2")
 );
 List<ServiceAuth> saved = serviceAuthDao.saveAll(authList);
 ```
@@ -259,18 +265,22 @@ public class AuthService {
 ## 📚 API Reference
 
 ### ServiceAuth Entity Methods
-- `ServiceAuth(String clientCode, String token, String clientIp, Long loggedInUserId)` - Constructor with auto-status
-- `setClientCodeAndToken(String clientCode, String token, Long loggedIn)` - Update client details
-- `updateStatus(Status status, Long userId)` - Update status with audit
+- `ServiceAuth(String serviceCode, String serviceAuthKey, String allowedIps)` - Constructor with auto-status and expiry
+- `setServiceCodeAndKey(String serviceCode, String serviceAuthKey, String allowedIps)` - Update service details
+- `updateStatus(Status status)` - Update status with audit
+- `updateExpiry(Date expiresAt)` - Update expiration date
 
 ### DAO Methods
 - `saveAll(List<ServiceAuth> serviceAuths)` - Batch save
 - `save(ServiceAuth serviceAuth)` - Single save
-- `findByClientCode(String clientCode)` - Find by client code (throws if empty)
-- `findByClientCodeAndStatus(String clientCode, Status status)` - Find by client and status
+- `findByServiceCode(String serviceCode)` - Find by service code (throws if empty)
+- `findByServiceCodeAndStatus(String serviceCode, Status status)` - Find by service and status
 - `findByStatus(Status status)` - Find by status
-- `findByToken(String token)` - Find by token (throws if null)
-- `countByClientCodeAndStatus(String clientCode, Status status)` - Count records
+- `findByServiceAuthKey(String serviceAuthKey)` - Find by auth key (throws if null)
+- `findByServiceCodeAndServiceAuthKeyAndStatus(String serviceCode, String serviceAuthKey, Status status)` - Find by service, key and status
+- `findByAllowedIps(String allowedIps)` - Find by allowed IPs
+- `findExpiredTokens()` - Find all expired tokens
+- `countByServiceCodeAndStatus(String serviceCode, Status status)` - Count records
 
 ### Status Enum Values
 - `ACTIVE` - Authentication is active and valid

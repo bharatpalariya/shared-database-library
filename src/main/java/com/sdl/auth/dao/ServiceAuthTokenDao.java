@@ -17,15 +17,21 @@ public interface ServiceAuthDao {
 
     List<ServiceAuth> saveAll(List<ServiceAuth> serviceAuths);
 
-    Integer countByClientCodeAndStatus(String clientCode, Status status);
+    Integer countByServiceCodeAndStatus(String serviceCode, Status status);
 
-    List<ServiceAuth> findByClientCode(String clientCode);
+    List<ServiceAuth> findByServiceCode(String serviceCode);
 
-    List<ServiceAuth> findByClientCodeAndStatus(String clientCode, Status status);
+    List<ServiceAuth> findByServiceCodeAndStatus(String serviceCode, Status status);
 
     List<ServiceAuth> findByStatus(Status status);
 
     ServiceAuth save(ServiceAuth serviceAuth);
 
-    ServiceAuth findByToken(String token);
+    ServiceAuth findByServiceAuthKey(String serviceAuthKey);
+
+    ServiceAuth findByServiceCodeAndServiceAuthKeyAndStatus(String serviceCode, String serviceAuthKey, Status status);
+
+    List<ServiceAuth> findByAllowedIps(String allowedIps);
+
+    List<ServiceAuth> findExpiredTokens();
 }
