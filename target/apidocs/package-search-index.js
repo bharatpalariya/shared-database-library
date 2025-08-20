@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"com.sdl.auth.common"},{"l":"com.sdl.auth.dao"},{"l":"com.sdl.auth.entity"},{"l":"com.sdl.auth.enums"},{"l":"com.sdl.auth.repo"},{"l":"com.sdl.user.common"},{"l":"com.sdl.user.dao"},{"l":"com.sdl.user.entity"},{"l":"com.sdl.user.enums"},{"l":"com.sdl.user.repo"}];updateSearchResults();

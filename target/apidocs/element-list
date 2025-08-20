@@ -1,0 +1,10 @@
+com.sdl.auth.common
+com.sdl.auth.dao
+com.sdl.auth.entity
+com.sdl.auth.enums
+com.sdl.auth.repo
+com.sdl.user.common
+com.sdl.user.dao
+com.sdl.user.entity
+com.sdl.user.enums
+com.sdl.user.repo
