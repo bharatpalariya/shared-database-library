@@ -4,10 +4,10 @@ import java.util.List;
 
 import com.sdl.auth.exception.SDLException;
 import com.sdl.auth.exception.SDLMessages;
-import com.sdl.auth.entity.ServiceAuth;
+import com.sdl.auth.entity.ServiceAuthToken;
 import com.sdl.auth.enums.Status;
 
-public interface ServiceAuthDao {
+public interface ServiceAuthTokenDao {
 
     default void isEmptyOrNull(Boolean bool) {
         if (Boolean.TRUE.equals(bool))
@@ -15,23 +15,23 @@ public interface ServiceAuthDao {
                     SDLMessages.DATA_NOT_FOUND_MESSAGE + " For Service Auth");
     }
 
-    List<ServiceAuth> saveAll(List<ServiceAuth> serviceAuths);
+    List<ServiceAuthToken> saveAll(List<ServiceAuthToken> serviceAuths);
 
     Integer countByServiceCodeAndStatus(String serviceCode, Status status);
 
-    List<ServiceAuth> findByServiceCode(String serviceCode);
+    List<ServiceAuthToken> findByServiceCode(String serviceCode);
 
-    List<ServiceAuth> findByServiceCodeAndStatus(String serviceCode, Status status);
+    List<ServiceAuthToken> findByServiceCodeAndStatus(String serviceCode, Status status);
 
-    List<ServiceAuth> findByStatus(Status status);
+    List<ServiceAuthToken> findByStatus(Status status);
 
-    ServiceAuth save(ServiceAuth serviceAuth);
+    ServiceAuthToken save(ServiceAuthToken serviceAuth);
 
-    ServiceAuth findByServiceAuthKey(String serviceAuthKey);
+    ServiceAuthToken findByServiceAuthKey(String serviceAuthKey);
 
-    ServiceAuth findByServiceCodeAndServiceAuthKeyAndStatus(String serviceCode, String serviceAuthKey, Status status);
+    ServiceAuthToken findByServiceCodeAndServiceAuthKeyAndStatus(String serviceCode, String serviceAuthKey, Status status);
 
-    List<ServiceAuth> findByAllowedIps(String allowedIps);
+    List<ServiceAuthToken> findByAllowedIps(String allowedIps);
 
-    List<ServiceAuth> findExpiredTokens();
+    List<ServiceAuthToken> findExpiredTokens();
 }

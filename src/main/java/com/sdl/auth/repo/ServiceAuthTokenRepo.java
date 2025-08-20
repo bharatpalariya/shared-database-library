@@ -7,33 +7,33 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import com.sdl.auth.common.model.VariablesConstant;
-import com.sdl.auth.entity.ServiceAuth;
+import com.sdl.auth.entity.ServiceAuthToken;
 import com.sdl.auth.enums.Status;
 
-public interface ServiceAuthRepo extends JpaRepository<ServiceAuth, Long> {
+public interface ServiceAuthTokenRepo extends JpaRepository<ServiceAuthToken, Long> {
     
     @Query(value = "select count(*) from service_auth_token sat where sat.service_code = :serviceCode and sat.status = :status", 
            nativeQuery = true)
     Integer fetchCountByServiceCodeAndStatus(@Param(VariablesConstant.SERVICE_CODE) String serviceCode, 
                                            @Param(VariablesConstant.STATUS) String status);
 
-    List<ServiceAuth> findByServiceCode(String serviceCode);
+    List<ServiceAuthToken> findByServiceCode(String serviceCode);
 
-    List<ServiceAuth> findByServiceCodeAndStatus(String serviceCode, Status status);
+    List<ServiceAuthToken> findByServiceCodeAndStatus(String serviceCode, Status status);
 
-    List<ServiceAuth> findByStatus(Status status);
+    List<ServiceAuthToken> findByStatus(Status status);
 
-    ServiceAuth findByServiceAuthKey(String serviceAuthKey);
+    ServiceAuthToken findByServiceAuthKey(String serviceAuthKey);
 
-    ServiceAuth findByServiceCodeAndServiceAuthKeyAndStatus(String serviceCode, String serviceAuthKey, Status status);
+    ServiceAuthToken findByServiceCodeAndServiceAuthKeyAndStatus(String serviceCode, String serviceAuthKey, Status status);
 
-    List<ServiceAuth> findByAllowedIps(String allowedIps);
+    List<ServiceAuthToken> findByAllowedIps(String allowedIps);
 
     @Query(value = "select * from service_auth_token sat where sat.expires_at < NOW()", 
            nativeQuery = true)
-    List<ServiceAuth> findExpiredTokens();
+    List<ServiceAuthToken> findExpiredTokens();
 
     @Query(value = "select * from service_auth_token sat where sat.allowed_ips LIKE %:ipAddress%", 
            nativeQuery = true)
-    List<ServiceAuth> findByIpAddress(@Param("ipAddress") String ipAddress);
+    List<ServiceAuthToken> findByIpAddress(@Param("ipAddress") String ipAddress);
 }

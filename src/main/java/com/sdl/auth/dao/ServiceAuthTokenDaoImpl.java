@@ -7,13 +7,13 @@ import org.springframework.stereotype.Component;
 
 import com.sdl.auth.entity.ServiceAuthToken;
 import com.sdl.auth.enums.Status;
-import com.sdl.auth.repo.ServiceAuthRepo;
+import com.sdl.auth.repo.ServiceAuthTokenRepo;
 
 @Component
 public class ServiceAuthTokenDaoImpl implements ServiceAuthTokenDao {
 
     @Autowired
-    ServiceAuthRepo repo;
+    ServiceAuthTokenRepo repo;
 
     @Override
     public List<ServiceAuthToken> saveAll(List<ServiceAuthToken> serviceAuths) {
