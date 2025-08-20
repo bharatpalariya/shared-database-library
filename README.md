@@ -1,102 +1,334 @@
-# Shared Database Library
+# Shared Database Library - ServiceAuth
 
-A common entity library for microservices that provides shared database entities, DTOs, and DAOs.
+A common entity library for microservices that provides shared database entities, DAOs, and repositories for service authentication management.
 
-## ServiceAuth Entity
+## 📋 Table of Contents
+- [Overview](#overview)
+- [Architecture](#architecture)
+- [Database Schema](#database-schema)
+- [How It Works](#how-it-works)
+- [Usage Examples](#usage-examples)
+- [Integration Guide](#integration-guide)
+- [API Reference](#api-reference)
+- [Building and Installation](#building-and-installation)
+
+## 🔍 Overview
 
 This library provides a complete implementation for service authentication management with the following structure:
 
-### Database Table: `service_auth`
+### Key Components:
+- **Entity**: `ServiceAuth` - JPA entity with Lombok annotations
+- **Enums**: `Status` - Authentication status management
+- **DAO Interface**: `ServiceAuthDao` - Data access operations
+- **DAO Implementation**: `ServiceAuthDaoImpl` - Business logic implementation
+- **Repository**: `ServiceAuthRepo` - Spring Data JPA repository
+- **Exception Handling**: Custom exceptions and error messages
 
-| Column Name | Type | Constraints | Description |
-|-------------|------|-------------|-------------|
-| id | BIGINT | Primary Key, Auto Increment | Unique identifier |
-| client_code | VARCHAR(50) | NOT NULL, Size: 3-50 chars | Client identification code |
-| token | VARCHAR(500) | NOT NULL, Size: 10-500 chars | Authentication token |
-| client_ip | VARCHAR(45) | NOT NULL, Valid IPv4/IPv6 | Client IP address |
-| status | VARCHAR(20) | NOT NULL, Enum values | Status: ACTIVE, INACTIVE, SUSPENDED, EXPIRED |
-| created_at | TIMESTAMP | NOT NULL, Auto-set on creation | Record creation timestamp |
-| updated_at | TIMESTAMP | Auto-updated on modification | Record update timestamp |
-
-### Package Structure
+## 🏗️ Architecture
 
 ```
 com.sdl.auth/
 ├── entity/
-│   └── ServiceAuth.java          # JPA Entity with validation
-├── dto/
-│   ├── ServiceAuthDto.java       # Data Transfer Object
-│   ├── ServiceAuthCreateDto.java # DTO for creation operations
-│   └── ServiceAuthUpdateDto.java # DTO for update operations
+│   └── ServiceAuth.java          # JPA Entity with Lombok
+├── enums/
+│   └── Status.java               # Status enumeration
 ├── dao/
-│   └── ServiceAuthDao.java       # Data Access Object interface
-└── mapper/
-│   └── ServiceAuthMapper.java    # Entity-DTO mapping utilities
+│   ├── ServiceAuthDao.java       # DAO Interface
+│   └── ServiceAuthDaoImpl.java   # DAO Implementation
+├── repo/
+│   └── ServiceAuthRepo.java      # Spring Data JPA Repository
+├── exception/
+│   ├── SDLException.java         # Custom Exception
+│   └── SDLMessages.java          # Error Messages
+└── common/model/
+    └── VariablesConstant.java    # Query Parameter Constants
 ```
 
-### Features
+## 🗄️ Database Schema
 
-1. **JPA Entity (`ServiceAuth`)**
-   - Full JPA annotations for database mapping
-   - Bean validation annotations for data integrity
-   - Automatic timestamp management with `@PrePersist` and `@PreUpdate`
-   - Custom validation for IP addresses and status values
+### Table: `service_auth`
 
-2. **Data Transfer Objects (DTOs)**
-   - `ServiceAuthDto`: Complete DTO with all fields
-   - `ServiceAuthCreateDto`: DTO for creation (excludes id, timestamps)
-   - `ServiceAuthUpdateDto`: DTO for updates (optional fields, requires id)
+| Column Name | Type | Constraints | Description |
+|-------------|------|-------------|-------------|
+| id | BIGINT | Primary Key, Auto Increment | Unique identifier |
+| client_code | VARCHAR | NOT NULL | Client identification code |
+| token | VARCHAR | NOT NULL | Authentication token |
+| client_ip | VARCHAR | NOT NULL | Client IP address |
+| status | VARCHAR | NOT NULL, Enum | Status: ACTIVE, INACTIVE, SUSPENDED, EXPIRED |
+| created_by | BIGINT | NOT NULL | User ID who created the record |
+| created_at | TIMESTAMP | NOT NULL, Auto-set | Record creation timestamp |
+| updated_by | BIGINT | Auto-updated | User ID who updated the record |
+| updated_at | TIMESTAMP | Auto-updated | Record update timestamp |
 
-3. **Data Access Object (DAO)**
-   - Complete interface with CRUD operations
-   - Finder methods by various criteria (clientCode, token, status, clientIp)
-   - Existence checks and counting methods
+## ⚙️ How It Works
 
-4. **Mapper Utilities**
-   - Static methods for converting between Entity and DTOs
-   - Null-safe operations
-   - List conversion utilities
-
-### Validation Rules
-
-- **Client Code**: Required, 3-50 characters
-- **Token**: Required, 10-500 characters  
-- **Client IP**: Required, must be valid IPv4 or IPv6 address
-- **Status**: Required, must be one of: ACTIVE, INACTIVE, SUSPENDED, EXPIRED
-- **Timestamps**: Automatically managed by JPA lifecycle hooks
-
-### Usage Example
-
+### 1. **Entity Layer (`ServiceAuth`)**
 ```java
-// Create a new service auth
-ServiceAuthCreateDto createDto = new ServiceAuthCreateDto(
-    "CLIENT001", 
-    "auth-token-123456", 
-    "192.168.1.100", 
-    "ACTIVE"
+@Table(name = "service_auth")
+@Entity
+@Data
+@NoArgsConstructor
+public class ServiceAuth {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonIgnore
+    private Long id;
+    
+    private String clientCode;
+    private String token;
+    private String clientIp;
+    
+    @Enumerated(EnumType.STRING)
+    private Status status;
+    
+    private Long createdBy;
+    private Date createdAt;
+    private Long updatedBy;
+    private Date updatedAt;
+}
+```
+
+**Features:**
+- **Lombok Annotations**: `@Data` generates getters, setters, toString, equals, hashCode
+- **`@NoArgsConstructor`**: Default constructor for JPA
+- **`@JsonIgnore`**: Hides ID from JSON serialization
+- **`@Enumerated(EnumType.STRING)`**: Stores enum as string in database
+- **Automatic Timestamps**: Managed through custom constructors and methods
+
+### 2. **Custom Constructors and Methods**
+```java
+// Constructor with automatic status and timestamps
+public ServiceAuth(String clientCode, String token, String clientIp, Long loggedInUserId) {
+    this.clientCode = clientCode;
+    this.token = token;
+    this.clientIp = clientIp;
+    this.status = Status.ACTIVE;           // Auto-set to ACTIVE
+    this.createdBy = loggedInUserId;
+    this.updatedBy = loggedInUserId;
+    this.createdAt = new Date();           // Auto-set current time
+    this.updatedAt = new Date();
+}
+
+// Method to update client details
+public ServiceAuth setClientCodeAndToken(String clientCode, String token, Long loggedIn) {
+    this.id = null;                        // Reset ID for new entity
+    this.clientCode = clientCode;
+    this.token = token;
+    this.createdBy = loggedIn;
+    this.updatedBy = loggedIn;
+    this.createdAt = new Date();
+    this.updatedAt = new Date();
+    return this;
+}
+
+// Method to update status with audit trail
+public ServiceAuth updateStatus(Status status, Long userId) {
+    this.status = status;
+    this.updatedAt = new Date();           // Auto-update timestamp
+    this.updatedBy = userId;               // Track who updated
+    return this;
+}
+```
+
+### 3. **DAO Layer with Exception Handling**
+```java
+public interface ServiceAuthDao {
+    // Default method for validation and exception handling
+    default void isEmptyOrNull(Boolean bool) {
+        if (Boolean.TRUE.equals(bool))
+            throw new SDLException(SDLMessages.DATA_NOT_FOUND_CODE,
+                    SDLMessages.DATA_NOT_FOUND_MESSAGE + " For Service Auth");
+    }
+    
+    List<ServiceAuth> saveAll(List<ServiceAuth> serviceAuths);
+    Integer countByClientCodeAndStatus(String clientCode, Status status);
+    List<ServiceAuth> findByClientCode(String clientCode);
+    ServiceAuth findByToken(String token);
+}
+```
+
+### 4. **DAO Implementation with Validation**
+```java
+@Component
+public class ServiceAuthDaoImpl implements ServiceAuthDao {
+    @Autowired
+    ServiceAuthRepo repo;
+
+    @Override
+    public List<ServiceAuth> findByClientCode(String clientCode) {
+        List<ServiceAuth> result = repo.findByClientCode(clientCode);
+        isEmptyOrNull(result.isEmpty());    // Throws exception if empty
+        return result;
+    }
+}
+```
+
+### 5. **Repository with Native Queries**
+```java
+public interface ServiceAuthRepo extends JpaRepository<ServiceAuth, Long> {
+    @Query(value = "select count(*) from service_auth sa where sa.client_code = :clientCode and sa.status = :status", 
+           nativeQuery = true)
+    Integer fetchCountByClientCodeAndStatus(@Param(VariablesConstant.CLIENT_CODE) String clientCode, 
+                                          @Param(VariablesConstant.STATUS) String status);
+}
+```
+
+## 🚀 Usage Examples
+
+### Creating a New Service Auth
+```java
+// Create new service authentication
+ServiceAuth auth = new ServiceAuth("CLIENT001", "auth-token-123", "192.168.1.100", 1L);
+
+// Save using DAO
+ServiceAuth savedAuth = serviceAuthDao.save(auth);
+```
+
+### Updating Status
+```java
+// Update status with audit trail
+ServiceAuth updatedAuth = existingAuth.updateStatus(Status.SUSPENDED, 2L);
+serviceAuthDao.save(updatedAuth);
+```
+
+### Querying Data
+```java
+// Find by client code (throws exception if not found)
+List<ServiceAuth> auths = serviceAuthDao.findByClientCode("CLIENT001");
+
+// Count active auths for a client
+Integer count = serviceAuthDao.countByClientCodeAndStatus("CLIENT001", Status.ACTIVE);
+
+// Find by token
+ServiceAuth auth = serviceAuthDao.findByToken("auth-token-123");
+```
+
+### Batch Operations
+```java
+// Save multiple auth records
+List<ServiceAuth> authList = Arrays.asList(
+    new ServiceAuth("CLIENT001", "token1", "192.168.1.1", 1L),
+    new ServiceAuth("CLIENT002", "token2", "192.168.1.2", 1L)
 );
-
-ServiceAuth entity = ServiceAuthMapper.toEntity(createDto);
-// Save using your preferred persistence mechanism
-
-// Convert to DTO for API response
-ServiceAuthDto responseDto = ServiceAuthMapper.toDto(entity);
+List<ServiceAuth> saved = serviceAuthDao.saveAll(authList);
 ```
 
-### Maven Dependencies
+## 🔧 Integration Guide
 
-The library includes the following key dependencies:
-- Jakarta Persistence API 3.1.0
-- Jakarta Validation API 3.0.2
-- Java 17 compatibility
+### Step 1: Add Dependency
+Add to your Spring Boot project's `pom.xml`:
+```xml
+<dependency>
+    <groupId>com.sdl</groupId>
+    <artifactId>shared-database-library</artifactId>
+    <version>1.0.0</version>
+</dependency>
+```
 
-### Building
+### Step 2: Configure Spring Boot Application
+```java
+@SpringBootApplication
+@EntityScan("com.sdl.auth.entity")                    // Scan for JPA entities
+@EnableJpaRepositories("com.sdl.auth.repo")          // Enable JPA repositories
+@ComponentScan(basePackages = {"com.yourapp", "com.sdl.auth"})  // Component scan
+public class YourApplication {
+    public static void main(String[] args) {
+        SpringApplication.run(YourApplication.class, args);
+    }
+}
+```
 
+### Step 3: Use in Your Service
+```java
+@Service
+public class AuthService {
+    @Autowired
+    private ServiceAuthDao serviceAuthDao;
+    
+    public ServiceAuth createAuth(String clientCode, String token, String clientIp, Long userId) {
+        ServiceAuth auth = new ServiceAuth(clientCode, token, clientIp, userId);
+        return serviceAuthDao.save(auth);
+    }
+    
+    public List<ServiceAuth> getActiveAuths(String clientCode) {
+        return serviceAuthDao.findByClientCodeAndStatus(clientCode, Status.ACTIVE);
+    }
+}
+```
+
+## 📚 API Reference
+
+### ServiceAuth Entity Methods
+- `ServiceAuth(String clientCode, String token, String clientIp, Long loggedInUserId)` - Constructor with auto-status
+- `setClientCodeAndToken(String clientCode, String token, Long loggedIn)` - Update client details
+- `updateStatus(Status status, Long userId)` - Update status with audit
+
+### DAO Methods
+- `saveAll(List<ServiceAuth> serviceAuths)` - Batch save
+- `save(ServiceAuth serviceAuth)` - Single save
+- `findByClientCode(String clientCode)` - Find by client code (throws if empty)
+- `findByClientCodeAndStatus(String clientCode, Status status)` - Find by client and status
+- `findByStatus(Status status)` - Find by status
+- `findByToken(String token)` - Find by token (throws if null)
+- `countByClientCodeAndStatus(String clientCode, Status status)` - Count records
+
+### Status Enum Values
+- `ACTIVE` - Authentication is active and valid
+- `INACTIVE` - Authentication is inactive
+- `SUSPENDED` - Authentication is temporarily suspended
+- `EXPIRED` - Authentication has expired
+
+### Exception Handling
+- **`SDLException`**: Custom runtime exception
+- **Automatic Validation**: DAO methods throw exceptions for null/empty results
+- **Error Codes**: Standardized error codes and messages
+
+## 🛠️ Building and Installation
+
+### Prerequisites
+- Java 17+
+- Maven 3.6.3+
+
+### Build Commands
 ```bash
-mvn clean compile  # Compile the library
-mvn package       # Create JAR file
+# Set Java 17 (required for Lombok compatibility)
+export JAVA_HOME=/Users/bharatpalariya/Library/Java/JavaVirtualMachines/ms-17.0.16/Contents/Home
+
+# Compile
+mvn clean compile
+
+# Package
+mvn clean package
+
+# Install to local repository
+mvn clean install
 ```
 
-## Migration Notes
+### Dependencies
+- **Jakarta Persistence API 3.1.0** - JPA support
+- **Jakarta Validation API 3.0.2** - Validation annotations
+- **Lombok 1.18.30** - Code generation
+- **Jackson Annotations 2.15.2** - JSON processing
+- **Spring Data JPA 3.1.2** - Repository support
+- **Spring Context 6.0.11** - Dependency injection
 
-This replaces the previous `User` and `UserData` entities with a new `ServiceAuth` entity designed specifically for service authentication and authorization management.
+## 🎯 Key Benefits
+
+1. **🔄 Automatic Auditing**: Created/updated timestamps and user tracking
+2. **⚡ Exception Handling**: Built-in validation and error management
+3. **🔧 Lombok Integration**: Reduced boilerplate code
+4. **🗃️ Spring Data JPA**: Powerful query capabilities
+5. **📦 Enum Management**: Type-safe status handling
+6. **🔍 Native Queries**: Optimized database operations
+7. **🏗️ Modular Design**: Clean separation of concerns
+8. **🔒 Spring Boot Compatible**: Ready for microservices architecture
+
+## 📝 Migration Notes
+
+This replaces previous User and UserData entities with a comprehensive ServiceAuth implementation designed specifically for service authentication and authorization management in microservices architecture.
+
+---
+
+**Version**: 1.0.0  
+**Compatibility**: Spring Boot 3.5.4+, Java 17+  
+**License**: Internal Use
