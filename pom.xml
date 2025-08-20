@@ -6,7 +6,7 @@
 
   <groupId>com.sdl</groupId>
   <artifactId>shared-database-library</artifactId>
-  <version>1.2.0</version>
+  <version>1.7.0</version>
   <packaging>jar</packaging>
 
   <name>shared-database-library</name>
