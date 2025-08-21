@@ -20,11 +20,11 @@
 -docencoding
 'UTF-8'
 -doctitle
-'shared-database-library 1.7.0 API'
+'shared-database-library 1.8.0 API'
 -use
 -version
 -windowtitle
-'shared-database-library 1.7.0 API'
+'shared-database-library 1.8.0 API'
 com.mc.sdl.auth.entity
 com.mc.sdl.auth.daoimpl
 com.mc.sdl.auth.enums
@@ -103,21 +103,21 @@ com.mc.sdl.user.repo
 /Users/bharatpalariya/shared-database-library/src/main/java/.DS_Store = 1755698109334
 /Users/bharatpalariya/shared-database-library/src/main/java = 1755692273316
 /Users/bharatpalariya/shared-database-library/target/generated-sources/annotations = 1755773328882
-/Users/bharatpalariya/shared-database-library/target/apidocs/constant-values.html = 1755773358269
-/Users/bharatpalariya/shared-database-library/target/apidocs/tag-search-index.js = 1755773358503
-/Users/bharatpalariya/shared-database-library/target/apidocs/overview-tree.html = 1755773358456
-/Users/bharatpalariya/shared-database-library/target/apidocs/module-search-index.js = 1755773358499
-/Users/bharatpalariya/shared-database-library/target/apidocs/index.html = 1755773358463
-/Users/bharatpalariya/shared-database-library/target/apidocs/package-search-index.js = 1755773358500
-/Users/bharatpalariya/shared-database-library/target/apidocs/jquery-ui.overrides.css = 1755773358563
-/Users/bharatpalariya/shared-database-library/target/apidocs/index-all.html = 1755773358540
-/Users/bharatpalariya/shared-database-library/target/apidocs/allpackages-index.html = 1755773358498
-/Users/bharatpalariya/shared-database-library/target/apidocs/member-search-index.js = 1755773358502
-/Users/bharatpalariya/shared-database-library/target/apidocs/script.js = 1755773358551
-/Users/bharatpalariya/shared-database-library/target/apidocs/stylesheet.css = 1755773358550
-/Users/bharatpalariya/shared-database-library/target/apidocs/overview-summary.html = 1755773358542
-/Users/bharatpalariya/shared-database-library/target/apidocs/help-doc.html = 1755773358548
-/Users/bharatpalariya/shared-database-library/target/apidocs/element-list = 1755773358174
-/Users/bharatpalariya/shared-database-library/target/apidocs/allclasses-index.html = 1755773358494
-/Users/bharatpalariya/shared-database-library/target/apidocs/type-search-index.js = 1755773358501
-/Users/bharatpalariya/shared-database-library/target/apidocs/search.js = 1755773358555
+/Users/bharatpalariya/shared-database-library/target/apidocs/constant-values.html = 1755774087596
+/Users/bharatpalariya/shared-database-library/target/apidocs/tag-search-index.js = 1755774087891
+/Users/bharatpalariya/shared-database-library/target/apidocs/overview-tree.html = 1755774087814
+/Users/bharatpalariya/shared-database-library/target/apidocs/module-search-index.js = 1755774087887
+/Users/bharatpalariya/shared-database-library/target/apidocs/index.html = 1755774087820
+/Users/bharatpalariya/shared-database-library/target/apidocs/package-search-index.js = 1755774087888
+/Users/bharatpalariya/shared-database-library/target/apidocs/jquery-ui.overrides.css = 1755774087960
+/Users/bharatpalariya/shared-database-library/target/apidocs/index-all.html = 1755774087937
+/Users/bharatpalariya/shared-database-library/target/apidocs/allpackages-index.html = 1755774087886
+/Users/bharatpalariya/shared-database-library/target/apidocs/member-search-index.js = 1755774087890
+/Users/bharatpalariya/shared-database-library/target/apidocs/script.js = 1755774087950
+/Users/bharatpalariya/shared-database-library/target/apidocs/stylesheet.css = 1755774087950
+/Users/bharatpalariya/shared-database-library/target/apidocs/overview-summary.html = 1755774087940
+/Users/bharatpalariya/shared-database-library/target/apidocs/help-doc.html = 1755774087947
+/Users/bharatpalariya/shared-database-library/target/apidocs/element-list = 1755774087489
+/Users/bharatpalariya/shared-database-library/target/apidocs/allclasses-index.html = 1755774087881
+/Users/bharatpalariya/shared-database-library/target/apidocs/type-search-index.js = 1755774087889
+/Users/bharatpalariya/shared-database-library/target/apidocs/search.js = 1755774087953
