@@ -1,11 +1,6 @@
-com/mc/sdl/auth/repo/ServiceAuthTokenRepo.class
 com/mc/sdl/user/enums/UserStatus.class
 com/mc/sdl/user/dao/UserDao.class
-com/mc/sdl/auth/daoimpl/ServiceAuthTokenDaoImpl.class
+com/mc/sdl/user/repo/UserRepo.class
 com/mc/sdl/constants/SDLConstants.class
-com/mc/sdl/auth/dao/ServiceAuthTokenDao.class
 com/mc/sdl/user/entity/User.class
 com/mc/sdl/user/daoimpl/UserDaoImpl.class
-com/mc/sdl/auth/entity/ServiceAuthToken.class
-com/mc/sdl/user/repo/UserRepo.class
-com/mc/sdl/auth/enums/Status.class
